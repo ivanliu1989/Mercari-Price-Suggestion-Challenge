@@ -185,8 +185,7 @@ def get_model():
 model = get_model()
 model.summary()
 
-
-#FITTING THE MODEL
+# FITTING THE MODEL
 BATCH_SIZE = 20000
 epochs = 5
 
@@ -195,21 +194,29 @@ model.fit(X_train, dtrain.target, epochs=epochs, batch_size=BATCH_SIZE
           , validation_data=(X_valid, dvalid.target)
           , verbose=1)
 
-#EVLUEATE THE MODEL ON DEV TEST: What is it doing?
+# EVLUEATE THE MODEL ON DEV TEST: What is it doing?
 val_preds = model.predict(X_valid)
 val_preds = target_scaler.inverse_transform(val_preds)
-val_preds = np.exp(val_preds)+1
+val_preds = np.exp(val_preds) + 1
 
-#mean_absolute_error, mean_squared_log_error
+
+# mean_absolute_error, mean_squared_log_error
+def rmsle(y, y_pred):
+    # Source: https://www.kaggle.com/marknagelberg/rmsle-function
+    assert len(y) == len(y_pred)
+    to_sum = [(math.log(y_pred[i] + 1) - math.log(y[i] + 1)) ** 2.0 for i, pred in enumerate(y_pred)]
+    return (sum(to_sum) * (1.0 / len(y))) ** 0.5
+
+
 y_true = np.array(dvalid.price.values)
-y_pred = val_preds[:,0]
+y_pred = val_preds[:, 0]
 v_rmsle = rmsle(y_true, y_pred)
-print(" RMSLE error on dev test: "+str(v_rmsle))
+print(" RMSLE error on dev test: " + str(v_rmsle))
 
-#CREATE PREDICTIONS
+# CREATE PREDICTIONS
 preds = model.predict(X_test, batch_size=BATCH_SIZE)
 preds = target_scaler.inverse_transform(preds)
-preds = np.exp(preds)-1
+preds = np.exp(preds) - 1
 
 submission = test[["test_id"]]
 submission["price"] = preds

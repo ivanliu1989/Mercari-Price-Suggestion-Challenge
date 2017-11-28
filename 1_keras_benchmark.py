@@ -4,13 +4,11 @@
 # - Try LSTM, Bidirectional RNN, stack RNN
 # - Try with more dense layers or more rnn outputs
 # -  etc. Or even try a new architecture!
+import math
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import math
-from subprocess import check_output
-from sklearn.preprocessing import LabelEncoder, MinMaxScaler, StandardScaler
 from sklearn.cross_validation import train_test_split
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 
 # Read in data set
 train = pd.read_table("./data/train.tsv")
@@ -117,10 +115,9 @@ X_valid = get_keras_data(dvalid)
 X_test = get_keras_data(test)
 
 # KERAS MODEL DEFINITION
-from keras.layers import Input, Dropout, Dense, BatchNormalization, Activation, concatenate, GRU, Embedding, Flatten, \
-    BatchNormalization
+from keras.layers import Input, Dropout, Dense, concatenate, GRU, Embedding, Flatten
 from keras.models import Model
-from keras.callbacks import ModelCheckpoint, Callback, EarlyStopping
+from keras.callbacks import ModelCheckpoint, EarlyStopping
 from keras import backend as K
 
 
